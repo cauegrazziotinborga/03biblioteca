@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from sgb_livros.models import Livro
 
 # Create your views here.
 def cadastra_usuario(request):
@@ -32,6 +33,11 @@ def loga_usuario(request):
 
         if usuario:
             login(request, usuario)
-            return HttpResponse('Usuário autenticado!')
+            livros = Livro.objects.all()
+            return render(request, 'livros.html', {'livros': livros})
         else:
             return HttpResponse('Usuário e/ou senha inválidos!')
+        
+def logout_usuario(request):
+    logout(request)
+    return render(request, 'login.html')
