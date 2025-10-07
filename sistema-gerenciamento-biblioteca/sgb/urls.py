@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('livros/', include('sgb_livros.urls')),
     path('auth/', include('sgb_usuarios.urls')),
-    # path('/', include('sgb_livros.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
