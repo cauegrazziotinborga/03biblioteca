@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import Livro
+from .models import Livro, Autor
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -27,11 +27,13 @@ def cadastra_livro(request):
         if livro_id:        # Edita livro
             livro = livro_id
             livro.titulo = titulo
+            autor, created = Autor.objects.get_or_create(nome=autor)
             livro.autor = autor
             livro.ano_publicacao = ano_publicacao
             livro.editora = editora
             livro.save()
         else:       # Salva um novo livro
+            autor = Autor.objects.create(nome=autor)
             Livro.objects.create(
                 titulo = titulo,
                 autor = autor,
@@ -42,7 +44,8 @@ def cadastra_livro(request):
     # objects é o gerenciador do Django que serve para consultar o banco.
     # all() é uma função que retorna todos os registros da tabela livro. (mesma coisa que o SELECT em Banco de Dados).
     livros = Livro.objects.all()
-    return render(request, 'livros.html', {'livros': livros})
+    autores = Autor.objects.all()
+    return render(request, 'livros.html', {'livros': livros, 'autores': autores})
 
 @login_required
 def exclui_livro(request, livro_id):
@@ -55,13 +58,17 @@ def exclui_livro(request, livro_id):
 def edita_livro(request, livro_id):
     livro = get_object_or_404(Livro, id=livro_id)
     livros = Livro.objects.all()
+    autores = Autor.objects.all()
 
     if request.method == "POST":
         livro.titulo = request.POST['titulo']
-        livro.autor = request.POST['autor']
+        autor = request.POST['autor']
+        autor, created = Autor.objects.get_or_create(nome=autor)
+        livro.autor = autor
+
         livro.ano_publicacao = request.POST['ano_publicacao']
         livro.editora = request.POST['editora']
         livro.save()
         return redirect('cadastra_livro')
     
-    return render(request, 'livros.html', {'livros': livros, 'livro_editar': livro})
+    return render(request, 'livros.html', {'livros': livros, 'autores': autores, 'livro_editar': livro})

@@ -152,3 +152,8 @@ LOGIN_REDIRECT_URL = '/livros/'
 LOGOUT_REDIRECT_URL = '/'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+#email no terminal
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = 'noreply@sgb.com'
